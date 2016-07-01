@@ -1,4 +1,4 @@
-package Model::Entry;
+package Diary::Model::Entry;
 use strict;
 use warnings;
 

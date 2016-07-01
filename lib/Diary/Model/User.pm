@@ -1,4 +1,4 @@
-package Model::User;
+package Diary::Model::User;
 use strict;
 use warnings;
 

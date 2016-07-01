@@ -7,11 +7,11 @@ use Test::More;
 
 sub _require : Tests(startup) {
     my ($self) = @_;
-    require_ok 'Model::User';
+    require_ok 'Diary::Model::User';
 }
 
 sub _accessor : Tests {
-    my $user = Model::User->new(
+    my $user = Diary::Model::User->new(
         id   => 1,
         name => "syou6162",
     );
