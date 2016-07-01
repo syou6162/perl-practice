@@ -5,12 +5,12 @@ use warnings;
 use parent qw(Test::Class);
 use Test::More;
 
-sub _require : Test(startup => 1) {
+sub _require : Tests(startup) {
     my ($self) = @_;
     require_ok 'Model::User';
 }
 
-sub _accessor : Test {
+sub _accessor : Tests {
     my $user = Model::User->new(
         id   => 1,
         name => "syou6162",
