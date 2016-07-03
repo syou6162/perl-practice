@@ -11,8 +11,8 @@ CREATE TABLE entry (
     `user_id` BIGINT UNSIGNED NOT NULL,
     `title` VARCHAR(512) NOT NULL,
     `content` VARCHAR(512) NOT NULL,
-    `path` VARCHAR(256) NOT NULL,
-    PRIMARY KEY (entry_id)
+    `path` VARCHAR(128) NOT NULL,
+    PRIMARY KEY (entry_id),
     UNIQUE KEY (diary_id, user_id, path),
     KEY (user_id, path)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
