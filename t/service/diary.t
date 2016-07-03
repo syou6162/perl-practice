@@ -59,8 +59,10 @@ sub create : Tests {
     };
 
     subtest '日記作成できる' => sub {
-        my $title = 'syou6162';
+        my $user = create_user;
+        my $title = 'syou6162の日記';
         Diary::Service::Diary->create($c->dbh, {
+            user => $user,
             title => $title,
         });
 
@@ -68,11 +70,10 @@ sub create : Tests {
         my $diary = $dbh->select_row(q[
             SELECT * FROM diary
               WHERE
-                title = ?
-        ],  $title);
+                user_id = ?
+        ],  $user->{user_id});
 
         ok $diary, 'ユーザーできている';
-        is $diary->{id}, 1;
         is $diary->{title}, $title, 'titleが一致する';
     };
 }
