@@ -23,7 +23,7 @@ sub find_diary_by_user {
 sub create {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
-    my $user_id = $user->{user_id};
+    my $user_id = $user->{user_id} // croak 'user_id required';;
     my $title = $args->{title} // croak 'title required';
 
     $db->query( q[ INSERT INTO diary (user_id, title) VALUES (?) ], [$user_id, $title] );
