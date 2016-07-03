@@ -12,7 +12,7 @@ sub find_or_create_diary_by_user {
 sub find_diary_by_user {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
-    my $user_id = $args->{user_id};
+    my $user_id = $user->{user_id};
 
     my $row = $db->select_row(
         q[ SELECT * FROM diary WHERE user_id = ? ], $user_id
