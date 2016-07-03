@@ -4,12 +4,12 @@ use warnings;
 use Carp qw(croak);
 use Diary::Model::Diary;
 
-sub find_or_create_diary_by_user_id {
+sub find_or_create_diary_by_user {
     my ( $class, $db, $args ) = @_;
-    return $class->find_diary_by_user_id( $db, $args ) // $class->create( $db, $args );
+    return $class->find_diary_by_user( $db, $args ) // $class->create( $db, $args );
 }
 
-sub find_diary_by_user_id {
+sub find_diary_by_user {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
     my $user_id = $args->{user_id};
@@ -27,7 +27,7 @@ sub create {
     my $title = $args->{title} // croak 'title required';
 
     $db->query( q[ INSERT INTO diary (user_id, title) VALUES (?) ], [$user_id, $title] );
-    return $class->find_diary_by_user_id( $db, { user => $user } );
+    return $class->find_diary_by_user( $db, { user => $user } );
 }
 
 1;
