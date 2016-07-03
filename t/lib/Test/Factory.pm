@@ -9,11 +9,13 @@ use Exporter::Lite;
 
 our @EXPORT = qw(
      create_user
+     create_diary
 );
 
 #use Intern::Bookmark::Util;
 use Diary::Context;
 use Diary::Service::User;
+use Diary::Service::Diary;
 #use Entry;
 
 sub create_user {
