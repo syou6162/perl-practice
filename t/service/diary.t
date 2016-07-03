@@ -24,27 +24,32 @@ sub _require : Tests(startup) {
     require_ok 'Diary::Service::Diary';
 }
 
-sub find_diary_by_title : Tests {
+sub find_diary_by_user : Tests {
     my ($self) = @_;
-    # my $c = Diary::Context->new;
-    # subtest 'titleないとき失敗する' => sub {
-    #     dies_ok {
-    #         my $user = Diary::Service::User->find_user_by_title($c->dbh, {
-    #         });
-    #     };
-    # };
+    my $c = Diary::Context->new;
+    subtest 'userないとき失敗する' => sub {
+        dies_ok {
+            my $user = Diary::Service::User->find_diary_by_user($c->dbh, { });
+        };
+    };
 
-    # subtest 'user見つかる' => sub {
-    #     my $created_user = create_user;
+    subtest 'diary見つかる' => sub {
+        my $user = create_user;
+        my $title = 'syou6162の日記';
+        Diary::Service::Diary->create($c->dbh, {
+            user => $user,
+            title => $title,
+        });
 
-    #     my $user = Diary::Service::User->find_user_by_title($c->dbh, {
-    #         title => $created_user->title,
-    #     });
+        my $diary = Diary::Service::Diary->find_diary_by_user($c->dbh, {
+            user => $user,
+        });
 
-    #     ok $user, 'userが引ける';
-    #     isa_ok $user, 'Diary::Model::User', 'blessされている';
-    #     is $user->title, $created_user->title, 'titleが一致する';
-    # };
+        ok $diary, 'diaryが引ける';
+        note explain $diary;
+        isa_ok $diary, 'Diary::Model::Diary', 'blessされている';
+        is $diary->{title}, $title, 'titleが一致する';
+    };
 }
 
 sub create : Tests {
