@@ -12,12 +12,12 @@ sub _require : Tests(startup) {
 
 sub _accessor : Tests {
     my $user = Diary::Model::User->new(
-        id   => 1,
-        name => "syou6162",
+        user_id => 1,
+        name    => "syou6162",
     );
 
-    is $user->id,   1;
-    is $user->name, "syou6162";
+    is $user->user_id, 1;
+    is $user->name,    "syou6162";
 }
 
 __PACKAGE__->runtests;
