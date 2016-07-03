@@ -4,8 +4,8 @@ use warnings;
 
 use Class::Accessor::Lite (
     new => 1,
-    ro  => [qw(entry_id diary_id user_id title content)],
-    rw  => [qw(user)],
+    ro  => [qw(entry_id diary_id user_id title content url)],
+    rw  => [qw(user diary)],
 );
 
 1;
