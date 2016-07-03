@@ -12,13 +12,13 @@ sub _require : Tests(startup) {
 
 sub _accessor : Tests {
     my $entry = Diary::Model::Entry->new(
-        id      => 1,
-        title   => "今日の日記",
-        content => "今日はTGIFでした",
+        entry_id => 1,
+        title    => "今日の日記",
+        content  => "今日はTGIFでした",
     );
 
-    is $entry->id,    1;
-    is $entry->title, "今日の日記";
+    is $entry->entry_id, 1;
+    is $entry->title,    "今日の日記";
 }
 
 __PACKAGE__->runtests;

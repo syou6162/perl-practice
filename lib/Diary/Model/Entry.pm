@@ -4,7 +4,7 @@ use warnings;
 
 use Class::Accessor::Lite (
     new => 1,
-    rw  => [qw(id title content)],
+    rw  => [qw(entry_id title content)],
 );
 
 1;
