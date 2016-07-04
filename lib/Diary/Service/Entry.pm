@@ -19,6 +19,20 @@ sub find_entry_by_path {
     return Diary::Model::Entry->new($row);
 }
 
+sub find_entries_by_user {
+    my ( $class, $db, $args ) = @_;
+    my $user = $args->{user} // croak 'user required';
+    my $user_id = $user->{user_id} // croak 'user_id required';
+    my $diary = $args->{diary} // croak 'diary required';
+    my $diary_id = $diary->{diary_id} // croak 'diary_id required';
+
+    my $entries = $db->select_all(
+        q[ SELECT * FROM entry WHERE user_id = ? AND diary_id = ? ],
+        $user_id, $diary_id
+    ) or return;
+    return [map Diary::Model::Entry->new($_), @$entries];
+}
+
 sub create {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
