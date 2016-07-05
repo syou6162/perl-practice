@@ -48,6 +48,23 @@ sub create {
     return $class->find_entry_by_path( $db, { user => $user, diary => $diary, path => $path } );
 }
 
+sub update {
+    my ($class, $db, $args) = @_;
+
+    my $entry_id = $args->{entry_id} // croak 'entry_id required';
+    my $title = $args->{title} // '';
+    my $content = $args->{content} // '';
+
+    $db->query(q[
+        UPDATE entry
+          SET
+            title = ?,
+            content = ?
+          WHERE
+            entry_id = ?
+    ], $title, $content, $entry_id);
+}
+
 sub delete_entry {
     my ($class, $db, $entry) = @_;
 
