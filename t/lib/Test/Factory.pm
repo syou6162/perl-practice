@@ -10,6 +10,7 @@ use Exporter::Lite;
 our @EXPORT = qw(
      create_user
      create_diary
+     create_entry
 );
 
 #use Intern::Bookmark::Util;
@@ -41,6 +42,29 @@ sub create_diary {
 
     $dbh->query( q[ INSERT INTO diary (user_id, title) VALUES (?) ], [$user->user_id, $title] );
     return Diary::Service::Diary->find_diary_by_user( $dbh, { user => $user } );
+}
+
+sub create_entry {
+   my %args  = @_;
+   my $user  = $args{user} // create_user();
+   my $diary  = $args{diary} // create_diary(user => $user);
+   my $title = $args{title} // random_regex('\w{50}');
+   my $content = $args{content} // random_regex('\w{50}');
+   my $path = $args{path} // random_regex('\w{50}');
+   my $c = Diary::Context->new;
+   my $dbh = $c->dbh;
+   Diary::Service::Entry->create($dbh, {
+       user => $user,
+       diary => $diary,
+       title => $title,
+       content => $content,
+       path => $path,
+   });
+   return Diary::Service::Entry->find_entry_by_path($dbh, {
+       user => $user,
+       diary => $diary,
+       path => $path,
+   });
 }
 
 # sub create_entry {
