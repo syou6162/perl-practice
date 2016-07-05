@@ -48,4 +48,14 @@ sub create {
     return $class->find_entry_by_path( $db, { user => $user, diary => $diary, path => $path } );
 }
 
+sub delete_entry {
+    my ($class, $db, $entry) = @_;
+
+    $db->query(q[
+        DELETE FROM entry
+          WHERE
+            entry_id = ?
+    ], $entry->entry_id);
+}
+
 1;
