@@ -8,4 +8,19 @@ use Class::Accessor::Lite (
     rw  => [qw(user diary)],
 );
 
+sub load_user {
+    my ($class, $db, $entries) = @_;
+
+    my $user_ids = [ map { $_->user_id } @$entries ];
+    my $users = Diary::Service::User->find_users_by_user_ids($db, {
+        user_ids => $user_ids,
+    });
+
+    my $user_map = { map { $_->user_id => $_ } @$users };
+    for my $entry (@$entries) {
+        $entry->user($user_map->{$entry->user_id});
+    }
+    return $entries;
+}
+
 1;
