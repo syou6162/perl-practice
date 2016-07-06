@@ -19,6 +19,19 @@ sub find_user_by_name {
     return Diary::Model::User->new($row);
 }
 
+sub find_users_by_user_ids {
+    my ( $class, $db, $args ) = @_;
+    my $user_ids = $args->{user_ids} // croak 'user_ids required';
+    return [] unless scalar @$user_ids;
+
+    return [ map {
+        Diary::Model::User->new($_);
+    } @{$db->select_all(q[
+        SELECT * FROM user
+          WHERE user_id IN (?)
+    ], $user_ids)} ];
+}
+
 sub create {
     my ( $class, $db, $args ) = @_;
     my $name = $args->{name} // croak 'name required';
