@@ -138,6 +138,40 @@ sub update : Tests {
     };
 }
 
+sub delete_entry : Tests {
+    my ($self) = @_;
+    my $c = Diary::Context->new;
+
+    subtest 'エントリ更新できる' => sub {
+        my $user    = create_user;
+        my $diary   = create_diary( user => $user );
+        my $title   = "今日の日記!!!";
+        my $content = "暑い!!!";
+        my $path    = "hot_day";
+
+        my $entry = Diary::Service::Entry->create($c->dbh, {
+            user => $user,
+            diary => $diary,
+            title => $title,
+            content => $content,
+            path => $path,
+        });
+        ok $entry, 'entryできている';
+
+        Diary::Service::Entry->delete_entry( $c->dbh, $entry );
+
+        ok ! Diary::Service::Entry->find_entry_by_path(
+            $c->dbh,
+            {
+                user => $user,
+                diary => $diary,
+                path  => $path,
+            }
+        );
+    };
+}
+
+
 __PACKAGE__->runtests;
 
 1;
