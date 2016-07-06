@@ -93,6 +93,51 @@ sub create : Tests {
     };
 }
 
+sub update : Tests {
+    my ($self) = @_;
+    my $c = Diary::Context->new;
+
+    subtest 'エントリ更新できる' => sub {
+        my $user    = create_user;
+        my $diary   = create_diary( user => $user );
+        my $title   = "今日の日記!!!";
+        my $content = "暑い!!!";
+        my $path    = "hot_day";
+
+        my $entry = Diary::Service::Entry->create($c->dbh, {
+            user => $user,
+            diary => $diary,
+            title => $title,
+            content => $content,
+            path => $path,
+        });
+
+        my $updated_title   = "明日の日記!!!";
+        my $updated_content = "寒い!!!";
+        Diary::Service::Entry->update(
+            $c->dbh,
+            {
+                entry_id => $entry->entry_id,
+                title    => $updated_title,
+                content  => $updated_content,
+            }
+        );
+
+        my $updated_entry = Diary::Service::Entry->find_entry_by_path(
+            $c->dbh,
+            {
+                user => $user,
+                diary => $diary,
+                path  => $path,
+            }
+        );
+
+        ok $updated_entry, 'entryできている';
+        is $updated_entry->title, $updated_title, 'titleが一致する';
+        is $updated_entry->content, $updated_content, 'contentが一致する';
+    };
+}
+
 __PACKAGE__->runtests;
 
 1;
