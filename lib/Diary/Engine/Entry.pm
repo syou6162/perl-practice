@@ -7,6 +7,24 @@ use utf8;
 use Diary::Service::Diary;
 use Diary::Service::Entry;
 
+sub default {
+    my ($class, $c) = @_;
+    my $path = $c->req->parameters->{path};
+
+    my $user = $c->user;
+    my $diary = Diary::Service::Diary->find_diary_by_user($c->dbh, {
+        user => $user,
+    });
+    my $entry = Diary::Service::Entry->find_entry_by_path($c->dbh, {
+        user    => $user,
+        diary => $diary,
+        path => $path,
+    });
+    $c->html('entry.html', {
+        entry    => $entry,
+    });
+}
+
 sub add_get {
     my ($class, $c) = @_;
     my $path = $c->req->parameters->{path};
