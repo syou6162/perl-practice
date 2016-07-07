@@ -125,19 +125,23 @@ sub update : Tests {
         my $content = "暑い!!!";
         my $path    = "hot_day";
 
-        my $entry = Diary::Service::Entry->create($c->dbh, {
-            user => $user,
-            diary => $diary,
-            title => $title,
-            content => $content,
-            path => $path,
-        });
+        my $entry = Diary::Service::Entry->create(
+            $c->dbh,
+            {
+                user    => $user,
+                diary   => $diary,
+                title   => $title,
+                content => $content,
+                path    => $path,
+            }
+        );
 
         my $updated_title   = "明日の日記!!!";
         my $updated_content = "寒い!!!";
         Diary::Service::Entry->update(
             $c->dbh,
             {
+                user     => $user,
                 entry_id => $entry->entry_id,
                 title    => $updated_title,
                 content  => $updated_content,
@@ -147,7 +151,7 @@ sub update : Tests {
         my $updated_entry = Diary::Service::Entry->find_entry_by_path(
             $c->dbh,
             {
-                user => $user,
+                user  => $user,
                 diary => $diary,
                 path  => $path,
             }
