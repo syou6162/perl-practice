@@ -1,0 +1,25 @@
+[% WRAPPER "_wrapper.tt" WITH title = "Entry::Add" %]
+
+<form action="/entry/add" method="post">
+  <table>
+    <tr>
+      <th><label for="url">タイトル</label></th>
+      <td>
+        <input type="text" id="title" name="title" class="text" value="[% entry ? entry.title : c.req.param('title') %]"/>
+      </td>
+    </tr>
+    <tr>
+      <th><label for="content">内容</label></th>
+      <td>
+        <input type="text" id="entry-content" name="entry-content" class="text" value="[% entry ? entry.content : c.req.param('content') %]"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="submit">
+        <input type="submit" value="作成"/>
+      </td>
+    </tr>
+  </table>
+</form>
+
+[% END %]
