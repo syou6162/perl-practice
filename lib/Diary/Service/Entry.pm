@@ -4,6 +4,17 @@ use warnings;
 use Carp qw(croak);
 use Diary::Model::Entry;
 
+sub find_entry_by_entry_id {
+    my ( $class, $db, $args ) = @_;
+    my $entry_id = $args->{entry_id} // croak 'entry_id required';
+
+    my $row = $db->select_row(
+        q[ SELECT * FROM entry WHERE entry_id = ?],
+        $entry_id
+    ) or return;
+    return Diary::Model::Entry->new($row);
+}
+
 sub find_entry_by_path {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';

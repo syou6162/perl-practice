@@ -24,6 +24,27 @@ sub _require : Tests(startup) {
     require_ok 'Diary::Service::Entry';
 }
 
+sub find_entry_by_entry_id : Tests {
+    my ($self) = @_;
+    my $c = Diary::Context->new;
+    my $user    = create_user;
+    my $diary   = create_diary( user => $user );
+
+    my $expected_entry = Diary::Service::Entry->create($c->dbh, {
+        user => $user,
+        diary => $diary,
+        title => "entry1",
+        content => "content1",
+        path => "path1",
+    });
+
+    my $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
+        entry_id => $expected_entry->entry_id,
+    });
+    ok $entry;
+    is $entry->title, $expected_entry->title;
+}
+
 sub find_entries_by_user : Tests {
     my ($self) = @_;
     my $c = Diary::Context->new;
