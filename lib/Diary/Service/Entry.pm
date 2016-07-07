@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Carp qw(croak);
 use Diary::Model::Entry;
+use Diary::Util;
 
 sub find_entry_by_entry_id {
     my ( $class, $db, $args ) = @_;
@@ -52,11 +53,12 @@ sub create {
     my $diary_id = $diary->{diary_id} // croak 'diary_id required';
     my $title = $args->{title} // croak 'title required';
     my $content = $args->{content};
-    my $path = $args->{path};
+    my $created = Diary::Util::now->epoch;
+    my $path = $args->{content} || $created;
 
-    $db->query( q[ INSERT INTO entry (diary_id, user_id, title, content, path) VALUES (?) ],
-                [$diary_id, $user_id, $title, $content, $path] );
-    return $class->find_entry_by_path( $db, { user => $user, diary => $diary, path => $path } );
+    $db->query( q[ INSERT INTO entry (diary_id, user_id, title, content, created, path) VALUES (?) ],
+                [$diary_id, $user_id, $title, $content, $created, $path] );
+    return $class->find_entry_by_path( $db, { user => $user, diary => $diary, created => $created, path => $path } );
 }
 
 sub update {
