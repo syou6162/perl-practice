@@ -51,18 +51,18 @@ sub create_entry {
    my $path = $args{path} // random_regex('\w{50}');
    my $c = Diary::Context->new;
    my $dbh = $c->dbh;
-   Diary::Service::Entry->create($dbh, {
-       user => $user,
-       diary => $diary,
-       title => $title,
+   my $entry = Diary::Service::Entry->create( $dbh, {
+       user    => $user,
+       diary   => $diary,
+       title   => $title,
        content => $content,
-       path => $path,
-   });
-   return Diary::Service::Entry->find_entry_by_path($dbh, {
-       user => $user,
+       path    => $path,
+   } );
+   return Diary::Service::Entry->find_entry_by_path( $dbh, {
+       user  => $user,
        diary => $diary,
-       path => $path,
-   });
+       path  => $entry->path,
+   } );
 }
 
 1;
