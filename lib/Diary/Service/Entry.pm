@@ -61,8 +61,10 @@ sub create {
 
 sub update {
     my ($class, $db, $args) = @_;
-
+    my $user = $args->{user} // croak 'user required';
     my $entry_id = $args->{entry_id} // croak 'entry_id required';
+    my $entry = $class->find_entry_by_entry_id($db, {entry_id => $entry_id});
+    croak 'Different user name' unless $user->user_id == $entry->user_id;
     my $title = $args->{title} // '';
     my $content = $args->{content} // '';
 
