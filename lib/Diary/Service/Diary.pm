@@ -24,7 +24,7 @@ sub create {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
     my $user_id = $user->{user_id} // croak 'user_id required';;
-    my $title = $args->{title} // croak 'title required';
+    my $title = $args->{title} || $user->name . 'の日記';
 
     $db->query( q[ INSERT INTO diary (user_id, title) VALUES (?) ], [$user_id, $title] );
     return $class->find_diary_by_user( $db, { user => $user } );

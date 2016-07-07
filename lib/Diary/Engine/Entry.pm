@@ -58,7 +58,6 @@ sub add_post {
     my $user  = $c->user;
     my $diary = Diary::Service::Diary->find_or_create_diary_by_user( $c->dbh, {
         user  => $user,
-        title => $user->name . 'の日記',
     } );
 
     my $entry = Diary::Service::Entry->find_entry_by_path( $c->dbh, {
