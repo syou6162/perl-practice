@@ -76,7 +76,7 @@ sub create : Tests {
             SELECT * FROM diary
               WHERE
                 user_id = ?
-        ],  $user->{user_id});
+        ],  $user->user_id);
 
         ok $diary, 'ユーザーできている';
         is $diary->{title}, $title, 'titleが一致する';
