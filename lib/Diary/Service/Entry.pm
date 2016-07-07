@@ -54,7 +54,7 @@ sub create {
     my $title = $args->{title} // croak 'title required';
     my $content = $args->{content};
     my $created = Diary::Util::now->epoch;
-    my $path = $args->{content} || $created;
+    my $path = $args->{path} || $created;
 
     $db->query( q[ INSERT INTO entry (diary_id, user_id, title, content, created, path) VALUES (?) ],
                 [$diary_id, $user_id, $title, $content, $created, $path] );
