@@ -15,7 +15,6 @@ sub default {
 
     my $diary = Diary::Service::Diary->find_or_create_diary_by_user($c->dbh, {
         user => $user,
-        title => $user->name . "の日記",
     });
 
     my $entries = Diary::Service::Entry->find_entries_by_user($c->dbh, {
