@@ -98,6 +98,7 @@ sub delete_get {
     });
 
     $c->html('entry/delete.html', {
+        user    => $user,
         entry    => $entry,
     });
 }
@@ -117,7 +118,7 @@ sub delete_post {
         diary => $diary,
         path => $path,
     });
-    Diary::Service::Entry->delete_entry($c->dbh, $entry);
+    Diary::Service::Entry->delete_entry($c->dbh, { entry => $entry, user => $user });
 
     $c->res->redirect('/');
 }

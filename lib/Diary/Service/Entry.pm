@@ -66,7 +66,10 @@ sub update {
 }
 
 sub delete_entry {
-    my ($class, $db, $entry) = @_;
+    my ($class, $db, $args) = @_;
+    my $user = $args->{user} // croak 'user required';
+    my $entry = $args->{entry} // croak 'entry required';
+    croak 'Different user name' unless $user->user_id == $entry->user_id;
 
     $db->query(q[
         DELETE FROM entry

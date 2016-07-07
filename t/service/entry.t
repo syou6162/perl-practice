@@ -158,7 +158,9 @@ sub delete_entry : Tests {
         });
         ok $entry, 'entryできている';
 
-        Diary::Service::Entry->delete_entry( $c->dbh, $entry );
+        dies_ok { Diary::Service::Entry->delete_entry( $c->dbh, { entry => $entry } ) } "user必須";
+        dies_ok { Diary::Service::Entry->delete_entry( $c->dbh, { entry => $entry, user => create_user } ) } "本人じゃないと消せない";
+        Diary::Service::Entry->delete_entry( $c->dbh, { entry => $entry, user => $user } );
 
         ok ! Diary::Service::Entry->find_entry_by_path(
             $c->dbh,
