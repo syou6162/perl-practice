@@ -27,5 +27,12 @@ sub default {
     });
 }
 
+
+sub logout_post {
+    my ($class, $c) = @_;
+    $c->user(undef);
+    $c->res->redirect('/');
+}
+
 1;
 __END__
