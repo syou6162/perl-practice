@@ -54,6 +54,10 @@ sub make_router {
             action => 'delete_post',
         } => { method => 'POST' };
 
+        connect '/user/{username}' => {
+            engine => 'User', action => 'default'
+        };
+
         # API
         connect '/api/entries' => {
             engine => 'API',
