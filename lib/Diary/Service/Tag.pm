@@ -47,8 +47,9 @@ sub create {
     my $name = $args->{tag} // croak 'tag required';
     my $created = $args->{created} || Diary::Util::now;
 
-    $db->query( q[ INSERT INTO tag (name, created) VALUES (?) ], [$name, $created] );
     my $tag = $class->find_tag_by_name($db, {name => $name});
+    $db->query( q[ INSERT INTO tag (name, created) VALUES (?) ], [$name, $created] ) unless $tag;
+    $tag = $class->find_tag_by_name($db, {name => $name});
     $db->query( q[ INSERT INTO entry_tag_map (entry_id, tag_id) VALUES (?) ], [$entry_id, $tag->tag_id] );
 }
 
