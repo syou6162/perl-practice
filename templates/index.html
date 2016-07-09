@@ -4,7 +4,7 @@
   [% FOR entry IN entries %]
   <section class="bookmark">
     <header>
-      <a href="/entry?path=[% uri_escape(entry.path) %]">[% entry.title %]</a>
+      <a href="/entry?name=[% entry.user.name %]&path=[% uri_escape(entry.path) %]">[% entry.title %]</a>
     </header>
     <p>[% entry.content %]</p>
     <footer>

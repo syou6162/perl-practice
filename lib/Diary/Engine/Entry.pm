@@ -4,14 +4,18 @@ use strict;
 use warnings;
 use utf8;
 
+use Diary::Service::User;
 use Diary::Service::Diary;
 use Diary::Service::Entry;
 
 sub default {
     my ($class, $c) = @_;
+    my $name = $c->req->parameters->{name};
     my $path = $c->req->parameters->{path};
 
-    my $user = $c->user;
+    my $user = Diary::Service::User->find_user_by_name($c->dbh, {
+        name => $name,
+    });
     my $diary = Diary::Service::Diary->find_diary_by_user($c->dbh, {
         user => $user,
     });
