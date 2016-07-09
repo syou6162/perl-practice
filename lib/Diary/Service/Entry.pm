@@ -74,7 +74,7 @@ sub create {
 
     $db->query( q[ INSERT INTO entry (diary_id, user_id, title, content, created, path) VALUES (?) ],
                 [$diary_id, $user_id, $title, $content, $created, $path] );
-    return $class->find_entry_by_path( $db, { user => $user, diary => $diary, created => $created, path => $path } );
+    return $class->find_entry_by_path( $db, { user => $user, diary => $diary, path => $path } );
 }
 
 sub update {
