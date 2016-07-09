@@ -26,6 +26,7 @@ sub default {
         path  => $path,
     } );
     Diary::Model::Entry->load_user($c->dbh, [$entry]);
+    Diary::Model::Entry->load_tags($c->dbh, [$entry]);
     $c->html( 'entry.html', {
         entry => $entry,
     } );
