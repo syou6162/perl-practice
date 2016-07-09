@@ -129,7 +129,7 @@ sub delete_post {
     });
     Diary::Service::Entry->delete_entry($c->dbh, { entry => $entry, user => $user });
 
-    $c->res->redirect('/');
+    $c->res->redirect('/user/' . $user->name);
 }
 
 1;
