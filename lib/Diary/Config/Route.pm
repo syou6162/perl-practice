@@ -13,6 +13,24 @@ sub make_router {
             action => 'default',
         };
 
+        connect '/login' => {
+            engine => 'Index',
+            action => 'login_get',
+        } => { method => 'GET' };
+        connect '/login' => {
+            engine => 'Index',
+            action => 'login_post',
+        } => { method => 'POST' };
+
+        # connect '/logout' => {
+        #      engine => 'Index',
+        #      action => 'logout',
+        #  };
+        connect '/logout' => {
+            engine => 'Index',
+            action => 'logout_post',
+        } => { method => 'POST' };
+
         connect '/entry' => {
             engine => 'Entry',
             action => 'default',
