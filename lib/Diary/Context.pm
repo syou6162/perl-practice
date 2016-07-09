@@ -149,8 +149,7 @@ sub session {
 sub user {
     my ($self) = @_;
     return $self->{user} ||= do {
-        my $user_info = $self->session->get('hatenaoauth_user_info') || {};
-        my $user_name = $user_info->{url_name} or return '';
+        my $user_name = $self->session->get($self->session->id) or return '';
         Diary::Service::User->find_or_create_user_by_name($self->dbh, {
             name => $user_name
         });
