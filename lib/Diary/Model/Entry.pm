@@ -1,12 +1,14 @@
 package Diary::Model::Entry;
 use strict;
 use warnings;
+use Diary::Service::Tag;
+use Diary::Service::User;
 use Diary::Util;
 
 use Class::Accessor::Lite (
     new => 1,
     ro  => [qw(entry_id diary_id user_id title content path)],
-    rw  => [qw(user diary)],
+    rw  => [qw(user diary tags)],
 );
 
 sub created {
@@ -25,6 +27,20 @@ sub load_user {
     my $user_map = { map { $_->user_id => $_ } @$users };
     for my $entry (@$entries) {
         $entry->user($user_map->{$entry->user_id});
+    }
+    return $entries;
+}
+
+sub load_tags {
+    my ($class, $db, $entries) = @_;
+
+    my $entry_ids = [ map { $_->entry_id } @$entries ];
+    foreach my $entry (@$entries) {
+        my $entry_id = $entry->entry_id;
+        my $tags = Diary::Service::Tag->find_tags_by_entry_id($db, {
+            entry_id => $entry_id,
+        });
+        $entry->tags($tags);
     }
     return $entries;
 }
