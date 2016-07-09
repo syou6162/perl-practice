@@ -37,10 +37,12 @@ sub find_entries_by_user {
     my $user_id = $user->{user_id} // croak 'user_id required';
     my $diary = $args->{diary} // croak 'diary required';
     my $diary_id = $diary->{diary_id} // croak 'diary_id required';
+    my $limit = $args->{limit} || 20;
+    my $offset = $args->{offset} || 0;
 
     my $entries = $db->select_all(
-        q[ SELECT * FROM entry WHERE user_id = ? AND diary_id = ? ORDER BY created DESC],
-        $user_id, $diary_id
+        q[ SELECT * FROM entry WHERE user_id = ? AND diary_id = ? ORDER BY created DESC LIMIT ? OFFSET ?],
+        $user_id, $diary_id, $limit, $offset
     ) or return;
     return [map Diary::Model::Entry->new($_), @$entries];
 }
