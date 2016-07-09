@@ -39,7 +39,7 @@ sub find_entries_by_user {
     my $diary_id = $diary->{diary_id} // croak 'diary_id required';
 
     my $entries = $db->select_all(
-        q[ SELECT * FROM entry WHERE user_id = ? AND diary_id = ? ],
+        q[ SELECT * FROM entry WHERE user_id = ? AND diary_id = ? ORDER BY created DESC],
         $user_id, $diary_id
     ) or return;
     return [map Diary::Model::Entry->new($_), @$entries];
