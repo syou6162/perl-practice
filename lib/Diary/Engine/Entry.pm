@@ -24,6 +24,7 @@ sub default {
         diary => $diary,
         path  => $path,
     } );
+    Diary::Model::Entry->load_user($c->dbh, [$entry]);
     $c->html( 'entry.html', {
         entry => $entry,
     } );
