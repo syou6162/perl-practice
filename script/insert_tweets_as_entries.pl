@@ -9,6 +9,7 @@ use DateTime::Format::Strptime;
 use Diary::Service::User;
 use Diary::Service::Diary;
 use Diary::Service::Entry;
+use Diary::Service::Tag;
 use Diary::Context;
 use Diary::Config;
 
@@ -50,6 +51,7 @@ foreach my $msg (@$messages) {
         my $msg = flatten_message $msg;
         my $date = $msg->{date};
         my $username = $msg->{user};
+        my $list = $msg->{list};
         my $text = $msg->{text};
         my $created = $msg->{date};
         next unless $username && $text;
@@ -64,6 +66,7 @@ foreach my $msg (@$messages) {
             title   => $username,
             content => $text,
         };
-        Diary::Service::Entry->create( $context->dbh, $hash );
+        my $entry = Diary::Service::Entry->create( $context->dbh, $hash );
+        Diary::Service::Tag->create( $context->dbh, { entry => $entry, tag => $list } );
     }
 }
