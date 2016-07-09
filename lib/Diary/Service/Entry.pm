@@ -31,6 +31,20 @@ sub find_entry_by_path {
     return Diary::Model::Entry->new($row);
 }
 
+sub find_entries {
+    my ( $class, $db, $args ) = @_;
+    my $limit = $args->{limit} || 20;
+    my $offset = $args->{offset} || 0;
+
+    my $entries = $db->select_all(
+        q[ SELECT * FROM entry ORDER BY created DESC LIMIT ? OFFSET ?],
+        $limit, $offset
+    ) or return;
+    $entries = [map Diary::Model::Entry->new($_), @$entries];
+    Diary::Model::Entry->load_user($db, $entries);
+    return $entries;
+}
+
 sub find_entries_by_user {
     my ( $class, $db, $args ) = @_;
     my $user = $args->{user} // croak 'user required';
