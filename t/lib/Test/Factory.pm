@@ -16,6 +16,7 @@ our @EXPORT = qw(
 use Diary::Context;
 use Diary::Service::User;
 use Diary::Service::Diary;
+use Diary::Service::Entry;
 
 sub create_user {
     my %args = @_;
