@@ -10,7 +10,7 @@
         <header id="global-header">
             [% IF c.user %]
 	    <div style="display:inline-flex">
-              ようこそ [% c.user.name | html %] さん |
+              ようこそ <a href="/user/[% c.user.name | html %]">[% c.user.name | html %]</a> さん |
               <a href="/entry/add">作成</a> |
               <a href="/">一覧</a> |
 	      <form action="/logout" method="post">
