@@ -1,12 +1,18 @@
 package Diary::Model::Entry;
 use strict;
 use warnings;
+use Diary::Util;
 
 use Class::Accessor::Lite (
     new => 1,
     ro  => [qw(entry_id diary_id user_id title content path)],
     rw  => [qw(user diary)],
 );
+
+sub created {
+    my ($self) = @_;
+    $self->{_created} ||= eval { Diary::Util::datetime_from_db( $self->{created} )};
+}
 
 sub load_user {
     my ($class, $db, $entries) = @_;
