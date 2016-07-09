@@ -71,14 +71,12 @@ builder {
 
     # session and login
 
-    require LWP::UserAgent;
-
-    enable 'Session::Cookie', secret => 'intern-bookmark';
-    enable 'HatenaOAuth',
-        consumer_key       => config->param('hatena_oauth.consumer_key'),
-        consumer_secret    => config->param('hatena_oauth.consumer_secret'),
-        login_path         => '/login',
-        ua                 => LWP::UserAgent->new;
+    require Plack::Session::State::Cookie;
+    require Plack::Session::Store::DBI;
+    my $dbh  = DBI->connect( 'dbi:mysql:dbname=perl_practice_diary;host=localhost', 'nobody', 'nobody' );
+    enable 'Session',
+        store => Plack::Session::Store::DBI->new( dbh => $dbh ),
+        state => Plack::Session::State::Cookie->new( session_key => 'sid' );
 
     $app;
 };
