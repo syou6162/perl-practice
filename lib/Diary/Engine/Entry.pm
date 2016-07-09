@@ -59,6 +59,7 @@ sub add_post {
     my ($class, $c) = @_;
     my $title   = $c->req->string_param('title');
     my $content = $c->req->string_param('content');
+    my $path = $c->req->string_param('path');
 
     my $user  = $c->user;
     my $diary = Diary::Service::Diary->find_or_create_diary_by_user( $c->dbh, {
@@ -68,7 +69,7 @@ sub add_post {
     my $entry = Diary::Service::Entry->find_entry_by_path( $c->dbh, {
         user  => $user,
         diary => $diary,
-        path  => $title,
+        path  => $path,
     } );
     if ($entry) {
         Diary::Service::Entry->update( $c->dbh, {
@@ -83,10 +84,9 @@ sub add_post {
             diary   => $diary,
             title   => $title,
             content => $content,
-            path    => $title,
         } );
     }
-    $c->res->redirect('/');
+    $c->res->redirect('/entry?name=' . $user->name . '&path=' . $path);
 }
 
 sub delete_get {
