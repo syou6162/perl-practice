@@ -30,7 +30,7 @@ sub default {
 
 sub logout_post {
     my ($class, $c) = @_;
-    $c->user(undef);
+    $c->session->expire;
     $c->res->redirect('/');
 }
 
