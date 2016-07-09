@@ -21,11 +21,18 @@ CREATE TABLE entry (
 
 CREATE TABLE `tag` (
     `tag_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `entry_id` BIGINT UNSIGNED NOT NULL,
-    `tag` varchar(32) DEFAULT NULL,
+    `name` varchar(32) DEFAULT NULL,
     `created` TIMESTAMP NOT NULL,
     PRIMARY KEY (`tag_id`),
-    UNIQUE KEY (tag_id, entry_id)
+    UNIQUE KEY (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `entry_tag_map` (
+    `entry_id` BIGINT UNSIGNED NOT NULL,
+    `tag_id` BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY (`entry_id`, `tag_id`),
+    FOREIGN KEY (entry_id) REFERENCES entry(entry_id),
+    FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE diary (
