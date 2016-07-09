@@ -6,6 +6,11 @@
 </header>
 
 [% entry.content %]
+<p>
+  [% FOR tag IN entry.tags %]
+  [% tag.name %]
+  [% END %]
+</p>
 
 by <a href="user/[% entry.user.name %]">@[% entry.user.name %]</a>
 [% entry.created %]
