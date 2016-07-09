@@ -7,6 +7,7 @@ use utf8;
 use parent qw(Test::WWW::Mechanize::PSGI);
 use Plack::Builder;
 use Plack::Session;
+use HTTP::Cookies;
 
 use Test::More ();
 
@@ -30,6 +31,7 @@ sub new {
 
     my $user = delete $opts{user};
 
+    my $session_id;
     my $user_mw = sub {
         my $app = shift;
         builder {
@@ -37,9 +39,9 @@ sub new {
             sub {
                 my $env = shift;
                 my $user_name = $user ? $user->name : '';
-                my $user_info = { url_name => $user ? $user->name : '' };
                 my $session = Plack::Session->new($env);
-                $session->set(hatenaoauth_user_info => $user_info);
+                $session_id = $session->id;
+                $session->set($session_id => $user_name);
                 $app->($env);
             };
         };
@@ -48,6 +50,14 @@ sub new {
     my $self = $class->SUPER::new(
         app => $user_mw->($app),
         %opts,
+    );
+
+    $self->cookie_jar->set_cookie(
+        1,              # version
+        $session_id,    # key
+        $user->name,    # val
+        '/',            # path
+        'localhost',    # domain
     );
 
     return $self;
