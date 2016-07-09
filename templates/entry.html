@@ -1,0 +1,11 @@
+[% WRAPPER "_wrapper.tt" WITH title = "Diary::Add" %]
+<header>
+  <a href="entry/add?path=[% uri_escape(entry.path) %]">
+    [% entry.title %]
+  </a>
+</header>
+
+[% entry.content %]
+
+by [% entry.user.name %]
+[% END %]
