@@ -7,6 +7,7 @@ use utf8;
 use Diary::Service::User;
 use Diary::Service::Diary;
 use Diary::Service::Entry;
+use Diary::Util;
 
 sub default {
     my ($class, $c) = @_;
@@ -59,7 +60,7 @@ sub add_post {
     my ($class, $c) = @_;
     my $title   = $c->req->string_param('title');
     my $content = $c->req->string_param('content');
-    my $path = $c->req->string_param('path');
+    my $path = $c->req->string_param('path') || Diary::Util::now;
 
     my $user  = $c->user;
     my $diary = Diary::Service::Diary->find_or_create_diary_by_user( $c->dbh, {
