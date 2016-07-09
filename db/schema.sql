@@ -27,3 +27,8 @@ CREATE TABLE diary (
     PRIMARY KEY (diary_id),
     UNIQUE KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE sessions (
+    `id` CHAR(72) PRIMARY KEY,
+    `session_data` TEXT
+);
