@@ -9,9 +9,15 @@
     <body>
         <header id="global-header">
             [% IF c.user %]
-            ようこそ [% c.user.name | html %] さん |
-            <a href="/entry/add">作成</a> |
-            <a href="/">一覧</a> |
+	    <div style="display:inline-flex">
+              ようこそ [% c.user.name | html %] さん |
+              <a href="/entry/add">作成</a> |
+              <a href="/">一覧</a> |
+	      <form action="/logout" method="post">
+		<input type="submit" value="ログアウト"/>
+		<input type="hidden" name="path" value="[% entry.path %]"/>
+	      </form> |
+	    </div>
             [% ELSE %]
             <a href="/login">ログイン</a>
             [% END %]
