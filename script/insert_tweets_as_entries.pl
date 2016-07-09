@@ -68,5 +68,6 @@ foreach my $msg (@$messages) {
         };
         my $entry = Diary::Service::Entry->create( $context->dbh, $hash );
         Diary::Service::Tag->create( $context->dbh, { entry => $entry, tag => $list } );
+        Diary::Service::Tag->create( $context->dbh, { entry => $entry, tag => $created->strftime("%Y-%m-%d")} );
     }
 }
