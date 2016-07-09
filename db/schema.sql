@@ -19,6 +19,15 @@ CREATE TABLE entry (
     KEY (user_id, path)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `tag` (
+    `tag_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `entry_id` BIGINT UNSIGNED NOT NULL,
+    `tag` varchar(32) DEFAULT NULL,
+    `created` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`tag_id`),
+    UNIQUE KEY (tag_id, entry_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE diary (
     `diary_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` BIGINT UNSIGNED NOT NULL,
