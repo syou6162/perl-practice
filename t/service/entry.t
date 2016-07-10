@@ -54,6 +54,38 @@ sub find_entry_by_entry_id : Tests {
     is $entry->title, $expected_entry->title;
 }
 
+sub find_entries : Tests {
+    my ($self) = @_;
+    my $c = Diary::Context->new;
+
+    my $user1    = create_user;
+    my $user2    = create_user;
+    my $diary1   = create_diary( user => $user1 );
+    my $diary2   = create_diary( user => $user2 );
+
+    my $entries = Diary::Service::Entry->find_entries($c->dbh, { });
+    is scalar @$entries, 0;
+
+    Diary::Service::Entry->create($c->dbh, {
+        user => $user1,
+        diary => $diary1,
+        title => "entry1",
+        content => "content1",
+        path => "path1",
+    });
+    Diary::Service::Entry->create($c->dbh, {
+        user => $user2,
+        diary => $diary2,
+        title => "entry2",
+        content => "content2",
+        path => "path2",
+    });
+    $entries = Diary::Service::Entry->find_entries($c->dbh, { });
+    is scalar @$entries, 2;
+    is $entries->[0]->title, 'entry1';
+    is $entries->[1]->title, 'entry2';
+}
+
 sub find_entries_by_user : Tests {
     my ($self) = @_;
     my $c = Diary::Context->new;
