@@ -1,6 +1,7 @@
 package Diary::Service::Tag;
 use strict;
 use warnings;
+use List::MoreUtils qw/uniq/;
 use Carp qw(croak);
 use Diary::Model::Tag;
 use Diary::Util;
@@ -15,6 +16,19 @@ sub find_tags_by_entry_id {
     ) or return;
     my $tag_ids = [map {$_->{tag_id}} @$mapping];
     my $tags = [map $class->find_tag_by_tag_id($db, {tag_id => $_}), @$tag_ids];
+    return $tags;
+}
+
+sub find_tags_by_entry_ids {
+    my ( $class, $db, $args ) = @_;
+    my $entry_ids = $args->{entry_ids} // croak 'entry_ids required';
+
+    my $mapping = $db->select_all(
+        q[ SELECT * FROM entry_tag_map WHERE entry_id IN (?) ],
+        $entry_ids
+    ) or return;
+    my $tag_ids = [map {$_->{tag_id}} @$mapping];
+    my $tags = [map $class->find_tag_by_tag_id($db, {tag_id => $_}),  uniq @$tag_ids];
     return $tags;
 }
 
