@@ -25,13 +25,17 @@ sub _require : Tests(startup) {
     require_ok 'Diary::Service::Tag';
 }
 
+sub delete : Test(setup) {
+    my $c = Diary::Context->new;
+    $c->dbh->query(q[ DELETE FROM entry_tag_map ]);
+    $c->dbh->query(q[ DELETE FROM tag ]);
+}
+
 sub create : Tests {
     my ($self) = @_;
     my $c = Diary::Context->new;
 
     subtest 'タグ作成できる' => sub {
-        $c->dbh->query(q[ DELETE FROM entry_tag_map ]);
-        $c->dbh->query(q[ DELETE FROM tag ]);
         my $entry = create_entry;
         Diary::Service::Tag->create($c->dbh, {entry => $entry, tag => 'test1'});
         Diary::Service::Tag->create($c->dbh, {entry => $entry, tag => 'test2'});
