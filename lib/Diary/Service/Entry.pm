@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Carp qw(croak);
 use Diary::Model::Entry;
+use Diary::Service::Tag;
 use Diary::Util;
 
 sub find_entry_by_entry_id {
@@ -59,6 +60,36 @@ sub find_entries_by_user {
         $user_id, $diary_id, $limit, $offset
     ) or return;
     return [map Diary::Model::Entry->new($_), @$entries];
+}
+
+sub find_entries_by_user_and_tag {
+    my ( $class, $db, $args ) = @_;
+    my $username = $args->{username} // croak 'username required';
+    my $tag_name = $args->{tag} // croak 'tag required';
+
+    my $user = Diary::Service::User->find_user_by_name($db, {
+        name => $username,
+    });
+    my $diary = Diary::Service::Diary->find_diary_by_user($db, {
+        user => $user,
+    });
+    my $entries = Diary::Service::Entry->find_entries_by_user($db, {
+        user  => $user,
+        diary => $diary,
+    });
+
+    my $tag = Diary::Service::Tag->find_tag_by_name($db, {name => $tag_name});
+    my $tag_id = $tag->tag_id;
+    my $limit = $args->{limit} || 20;
+    my $offset = $args->{offset} || 0;
+
+    my $entry_tag_maps = $db->select_all(
+        q[ SELECT * FROM entry_tag_map WHERE entry_id IN (?) AND tag_id = ? LIMIT ? OFFSET ?],
+        [map {$_->entry_id} @$entries], $tag_id, $limit, $offset
+    ) or return;
+    $entries = [map $class->find_entry_by_entry_id($db, {entry_id => $_->{entry_id}}), @$entry_tag_maps];
+    Diary::Model::Entry->load_user($db, $entries);
+    return $entries;
 }
 
 sub create {
