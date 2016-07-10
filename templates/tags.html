@@ -1,0 +1,17 @@
+[% WRAPPER "_wrapper.tt" WITH title = "Diary::Tags" %]
+
+<header>
+  <a href="/user/[% user.name %]">
+    [% user.name %]
+  </a>さんのタグ一覧です。
+</header>
+
+<ul>
+  [% FOR tag IN tags_ %]
+  <li>
+    [% tag.name %]
+  </li>
+  [% END %]
+</ul>
+
+[% END %]
