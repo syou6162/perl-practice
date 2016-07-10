@@ -62,6 +62,10 @@ sub make_router {
             engine => 'Tag', action => 'default'
         };
 
+        connect '/user/{username}/tag/{tag}' => {
+            engine => 'Tag', action => 'tag'
+        };
+
         # API
         connect '/api/entries' => {
             engine => 'API',

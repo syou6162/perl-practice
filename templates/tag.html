@@ -1,0 +1,27 @@
+[% WRAPPER '_wrapper.tt' WITH title = "Diary::Top" %]
+
+[% IF entries.size() %]
+  [% FOR entry IN entries %]
+  <section class="bookmark">
+    <header>
+      <a href="/entry?name=[% entry.user.name %]&path=[% uri_escape(entry.path) %]">[% entry.title %]</a>
+    </header>
+    <p>[% entry.content %]</p>
+    <p>
+      [% FOR tag IN entry.tags %]
+      [% tag.name %]
+      [% END %]
+    </p>
+    by <a href="user/[% entry.user.name %]">@[% entry.user.name %]</a>
+    [% entry.created %]
+    <footer>
+      <a href="/entry/add?path=[% uri_escape(entry.path) %]">編集</a>
+      <a href="/entry/delete?path=[% uri_escape(entry.path) %]">削除</a>
+    </footer>
+  </section>
+  [% END %]
+[% ELSE %]
+  <p>エントリーがまだありません → <a href="/entry/add">作成</a></p>
+[% END %]
+
+[% END # WRAPPER %]

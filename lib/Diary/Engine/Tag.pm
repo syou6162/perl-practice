@@ -30,4 +30,18 @@ sub default {
     } );
 }
 
+sub tag {
+    my ($class, $c) = @_;
+    my $username = $c->req->path_parameters->{username};
+    my $tag = $c->req->path_parameters->{tag};
+
+    my $entries = Diary::Service::Entry->find_entries_by_user_and_tag($c->dbh, {
+        username  => $username,
+        tag => $tag,
+    });
+    $c->html( 'tag.html', {
+        entries => $entries,
+    } );
+}
+
 1;
