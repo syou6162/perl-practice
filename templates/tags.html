@@ -9,7 +9,7 @@
 <ul>
   [% FOR tag IN tags_ %]
   <li>
-    [% tag.name %]
+    <a href="/user/[% user.name %]/tag/[% tag.name %]">[% tag.name %]</a>
   </li>
   [% END %]
 </ul>
