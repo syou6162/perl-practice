@@ -24,6 +24,15 @@ sub _require : Tests(startup) {
     require_ok 'Diary::Service::Entry';
 }
 
+sub delete : Test(setup) {
+    my $c = Diary::Context->new;
+    $c->dbh->query(q[ DELETE FROM entry_tag_map ]);
+    $c->dbh->query(q[ DELETE FROM tag ]);
+    $c->dbh->query(q[ DELETE FROM entry ]);
+    $c->dbh->query(q[ DELETE FROM diary ]);
+    $c->dbh->query(q[ DELETE FROM user ]);
+}
+
 sub find_entry_by_entry_id : Tests {
     my ($self) = @_;
     my $c = Diary::Context->new;
