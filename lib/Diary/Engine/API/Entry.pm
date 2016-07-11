@@ -34,4 +34,18 @@ sub update {
     });
 }
 
+sub delete {
+    my ($class, $c) = @_;
+    my $user = $c->user;
+    my $entry_id = $c->req->parameters->{entry_id} // croak 'entry_id required';
+    my $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
+        entry_id => $entry_id,
+    });
+    Diary::Service::Entry->delete_entry($c->dbh, {
+        user => $user,
+        entry => $entry,
+    });
+    $c->json( {} );
+}
+
 1;
