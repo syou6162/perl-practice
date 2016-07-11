@@ -26,7 +26,11 @@ sub update {
         content => $content,
     });
 
+    $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
+        entry_id => $entry_id,
+    });
     $c->json({
+        entry => $entry->to_json,
     });
 }
 

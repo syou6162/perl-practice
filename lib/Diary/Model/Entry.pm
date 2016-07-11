@@ -4,6 +4,7 @@ use warnings;
 use Diary::Service::Tag;
 use Diary::Service::User;
 use Diary::Util;
+use JSON::Types;
 
 use Class::Accessor::Lite (
     new => 1,
@@ -49,13 +50,13 @@ sub to_json {
     my $self = shift;
     return {
         # Tagもoptionalに入れられるようにしたい
-        entry_id => $self->entry_id,
-        diary_id => $self->diary_id,
-        user_id  => $self->user_id,
-        title    => $self->title,
-        content  => $self->content,
-        path     => $self->path,
-        created  => $self->created,
+        entry_id => JSON::Types::number $self->entry_id,
+        diary_id => JSON::Types::number $self->diary_id,
+        user_id  => JSON::Types::number $self->user_id,
+        title    => JSON::Types::string $self->title,
+        content  => JSON::Types::string $self->content,
+        path     => JSON::Types::string $self->path,
+        created  => JSON::Types::string $self->created,
     };
 }
 
