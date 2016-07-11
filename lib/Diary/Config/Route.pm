@@ -67,13 +67,9 @@ sub make_router {
         };
 
         # API
-        connect '/api/entries' => {
-            engine => 'API',
-            action => 'entries',
-        };
-        connect '/api/entry' => {
-            engine => 'API',
-            action => 'entry_post',
+        connect '/api/entry/update' => {
+            engine => 'API::Entry',
+            action => 'update',
         } => { method => 'POST'};
     };
 }
