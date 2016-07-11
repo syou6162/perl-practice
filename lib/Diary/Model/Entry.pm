@@ -45,4 +45,18 @@ sub load_tags {
     return $entries;
 }
 
+sub to_json {
+    my $self = shift;
+    return {
+        # Tagもoptionalに入れられるようにしたい
+        entry_id => $self->entry_id,
+        diary_id => $self->diary_id,
+        user_id  => $self->user_id,
+        title    => $self->title,
+        content  => $self->content,
+        path     => $self->path,
+        created  => $self->created,
+    };
+}
+
 1;
