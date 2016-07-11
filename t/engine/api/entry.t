@@ -25,25 +25,24 @@ use Diary::Service::Diary;
 use Diary::Service::Entry;
 
 sub update : Tests {
-    my $c = Diary::Context->new;
+    my $c     = Diary::Context->new;
     my $user  = create_user;
-    my $diary = create_diary(user => $user);
-    my $entry = create_entry(user => $user, diary => $diary);
-    my $mech = create_mech(user => $user);
+    my $diary = create_diary( user => $user );
+    my $entry = create_entry( user => $user, diary => $diary );
+    my $mech  = create_mech( user => $user );
 
-    my $title = "タイトル";
+    my $title   = "タイトル";
     my $content = "ないよー";
-    $mech->post_ok('/api/entry/update',
-                   {
-                       entry_id => $entry->entry_id,
-                       title => $title,
-                       content => $content,
-                   });
-    note explain $mech->content;
-    $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
-        entry_id => $entry->entry_id,
-    });
-    is $entry->title, $title;
+    $mech->post_ok(
+        '/api/entry/update',
+        {
+            entry_id => $entry->entry_id,
+            title    => $title,
+            content  => $content,
+        }
+    );
+    $entry = Diary::Service::Entry->find_entry_by_entry_id( $c->dbh, { entry_id => $entry->entry_id, } );
+    is $entry->title,   $title;
     is $entry->content, $content;
 }
 
