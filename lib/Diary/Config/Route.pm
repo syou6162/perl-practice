@@ -71,6 +71,14 @@ sub make_router {
             engine => 'API::Entry',
             action => 'update',
         } => { method => 'POST'};
+        connect '/api/entry/update_title' => {
+            engine => 'API::Entry',
+            action => 'update_title',
+        } => { method => 'POST'};
+        connect '/api/entry/update_content' => {
+            engine => 'API::Entry',
+            action => 'update_content',
+        } => { method => 'POST'};
 
         connect '/api/entry/delete' => {
             engine => 'API::Entry',
