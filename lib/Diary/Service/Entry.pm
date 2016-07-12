@@ -121,7 +121,8 @@ sub update {
         UPDATE entry
           SET
             title = ?,
-            content = ?
+            content = ?,
+            created = created
           WHERE
             entry_id = ?
     ], $title, $content, $entry_id);
