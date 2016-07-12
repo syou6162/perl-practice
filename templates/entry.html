@@ -5,7 +5,31 @@
   </a>
 </header>
 
-[% entry.content %]
+<script>
+ jQuery(function($){
+     $('div.entry-content').click(function(){
+		 var eid = $(this)[0].id.split('-').pop();
+		 if(!$(this).hasClass('on')){
+			 $(this).addClass('on');
+			 var txt = $(this).text();
+			 $(this).html('<input type="text" value="' + txt + '" />');
+			 $('div.entry-content > input').focus().blur(function(){
+				 var cont = $(this).val();
+				 $(this).parent().removeClass('on').text(cont);
+				 $.ajax({
+					 type: 'POST',
+					 url: '/api/entry/update',
+					 data: {entry_id: eid,
+							content: cont,
+					 }
+				 });
+			 });
+		 }
+     });
+ });
+</script>
+
+<div class="entry-content" id="entry-content-[% entry.entry_id %]">[% entry.content %]</div>
 <p>
   [% FOR tag IN entry.tags %]
   [% tag.name %]

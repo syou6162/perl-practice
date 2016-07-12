@@ -34,6 +34,28 @@ sub update {
     });
 }
 
+sub update_content {
+    my ($class, $c) = @_;
+    my $user = $c->user;
+    my $entry_id = $c->req->parameters->{entry_id} // croak 'entry_id required';
+    my $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
+        entry_id => $entry_id,
+    });
+    my $content = $c->req->parameters->{content} || $entry->content;
+    Diary::Service::Entry->update($c->dbh, {
+        user => $user,
+        entry_id => $entry_id,
+        content => $content,
+    });
+
+    $entry = Diary::Service::Entry->find_entry_by_entry_id($c->dbh, {
+        entry_id => $entry_id,
+    });
+    $c->json({
+        entry => $entry->to_json,
+    });
+}
+
 sub delete {
     my ($class, $c) = @_;
     my $user = $c->user;
