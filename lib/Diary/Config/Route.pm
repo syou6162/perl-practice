@@ -15,10 +15,6 @@ sub make_router {
 
         connect '/login' => {
             engine => 'Index',
-            action => 'login_get',
-        } => { method => 'GET' };
-        connect '/login' => {
-            engine => 'Index',
             action => 'login_post',
         } => { method => 'POST' };
 

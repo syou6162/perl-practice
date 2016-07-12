@@ -16,11 +16,6 @@ sub default {
     });
 }
 
-sub login_get {
-    my ($class, $c) = @_;
-    $c->html( 'login.html', {} );
-};
-
 sub login_post {
     my ($class, $c) = @_;
     my $name = $c->req->string_param('name');

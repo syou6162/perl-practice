@@ -20,7 +20,7 @@
 	      </form> |
 	    </div>
             [% ELSE %]
-            <a href="/login">ログイン</a>
+		    ログイン
             [% END %]
         </header>
 
@@ -28,7 +28,8 @@
             [% IF c.user %]
             [% content %]
             [% ELSE %]
-            <p><a href="/login">ログイン</a>しないと使えません!</p>
+            ログインしないと使えません!
+			[% INCLUDE "login.html" %]
             [% END %]
         </div>
 
