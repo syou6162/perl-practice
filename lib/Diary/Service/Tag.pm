@@ -71,8 +71,8 @@ sub delete_tags_by_entry_id {
     my ( $class, $db, $args ) = @_;
     my $entry_id = $args->{entry_id} // croak 'entry_id required';
     my $tags = $class->find_tags_by_entry_id($db, $args);
-    $db->query(q[ DELETE FROM entry_tag_map WHERE entry_id = ? AND tag_id IN (?)],
-               $entry_id, [map {$_->tag_id} @$tags]);
+    $db->query(q[ DELETE FROM entry_tag_map WHERE entry_id = ? AND tag_id IN (?) ],
+               $entry_id, [map {$_->{tag_id}} @$tags]) if @$tags;
 }
 
 1;
