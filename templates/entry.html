@@ -1,8 +1,30 @@
 [% WRAPPER "_wrapper.tt" WITH title = "Diary::Add" %]
+<script>
+ jQuery(function($){
+     $('div.entry-title').click(function(){
+		 var eid = $(this)[0].id.split('-').pop();
+		 if(!$(this).hasClass('on')){
+			 $(this).addClass('on');
+			 var txt = $(this).text();
+			 $(this).html('<input type="text" value="' + txt + '" />');
+			 $('div.entry-title > input').focus().blur(function(){
+				 var t = $(this).val();
+				 $(this).parent().removeClass('on').text(t);
+				 $.ajax({
+					 type: 'POST',
+					 url: '/api/entry/update_title',
+					 data: {entry_id: eid,
+							title: t,
+					 }
+				 });
+			 });
+		 }
+     });
+ });
+</script>
+
 <header>
-  <a href="entry/add?path=[% uri_escape(entry.path) %]">
-    [% entry.title %]
-  </a>
+    <div class="entry-title" id="entry-title-[% entry.entry_id %]">[% entry.title %]</div>
 </header>
 
 <script>
