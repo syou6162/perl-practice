@@ -114,8 +114,8 @@ sub update {
     my $entry_id = $args->{entry_id} // croak 'entry_id required';
     my $entry = $class->find_entry_by_entry_id($db, {entry_id => $entry_id});
     croak 'Different user name' unless $user->user_id == $entry->user_id;
-    my $title = $args->{title} // '';
-    my $content = $args->{content} // '';
+    my $title = $args->{title} || $entry->title;
+    my $content = $args->{content} || $entry->content;
 
     $db->query(q[
         UPDATE entry
