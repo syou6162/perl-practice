@@ -133,6 +133,10 @@ sub delete_entry {
     my $entry = $args->{entry} // croak 'entry required';
     croak 'Different user name' unless $user->user_id == $entry->user_id;
 
+    Diary::Service::Tag->delete_tags_by_entry_id($db, {
+        entry_id => $entry->entry_id,
+    });
+
     $db->query(q[
         DELETE FROM entry
           WHERE
