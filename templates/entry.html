@@ -40,7 +40,7 @@
 				 $(this).parent().removeClass('on').text(cont);
 				 $.ajax({
 					 type: 'POST',
-					 url: '/api/entry/update',
+					 url: '/api/entry/update_content',
 					 data: {entry_id: eid,
 							content: cont,
 					 }
