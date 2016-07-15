@@ -40,4 +40,17 @@ sub create {
     return $class->find_user_by_name( $db, { name => $name } );
 }
 
+sub set_liked_pin {
+    my ( $class, $db, $args ) = @_;
+    my $name = $args->{name} // croak 'name required';
+    my $user = $class->find_or_create_user_by_name( $db, { name => $name } );
+    my $entry = $args->{entry} // croak 'entry required';
+    my $liked = $args->{liked} ? 1 : 0;
+    my $created = $args->{created} || Diary::Util::now;
+
+    $db->query( q[ INSERT INTO liked_pin (user_id, entry_id, liked, created) VALUES (?) ],
+                [ $user->user_id, $entry->entry_id, $liked, $created] );
+
+}
+
 1;
