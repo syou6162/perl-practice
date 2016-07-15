@@ -46,7 +46,6 @@ sub find_diary_by_user : Tests {
         });
 
         ok $diary, 'diaryが引ける';
-        note explain $diary;
         isa_ok $diary, 'Diary::Model::Diary', 'blessされている';
         is $diary->{title}, $title, 'titleが一致する';
     };
