@@ -36,7 +36,6 @@ sub default : Tests {
     my $content = "ないよー";
     subtest '新規作成' => sub {
         $mech->get_ok("/user/$name");
-        note explain $mech->content;
     };
 }
 
