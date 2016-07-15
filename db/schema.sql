@@ -54,5 +54,5 @@ CREATE TABLE liked_pin (
     `entry_id` BIGINT UNSIGNED NOT NULL,
     `liked` BOOLEAN NOT NULL,
     `created` TIMESTAMP NOT NULL,
-    PRIMARY KEY (user_id, entry_id),
+    PRIMARY KEY (user_id, entry_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
