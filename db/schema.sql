@@ -48,3 +48,11 @@ CREATE TABLE sessions (
     `id` CHAR(72) PRIMARY KEY,
     `session_data` TEXT
 );
+
+CREATE TABLE liked_pin (
+    `user_id` BIGINT UNSIGNED NOT NULL,
+    `entry_id` BIGINT UNSIGNED NOT NULL,
+    `liked` BOOLEAN NOT NULL,
+    `created` TIMESTAMP NOT NULL,
+    PRIMARY KEY (user_id, entry_id),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
