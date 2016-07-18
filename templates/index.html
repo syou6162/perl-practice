@@ -6,7 +6,7 @@
     <header>
       <a href="/entry?name=[% entry.user.name %]&path=[% uri_escape(entry.path) %]">[% entry.title %]</a>
     </header>
-    <p>[% entry.content %]</p>
+    <p>[% mark_raw(entry.content) %]</p>
     <footer>
       <a href="/entry/add?path=[% uri_escape(entry.path) %]">編集</a>
       <a href="/entry/delete?path=[% uri_escape(entry.path) %]">削除</a>

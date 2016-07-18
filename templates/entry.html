@@ -51,7 +51,7 @@
  });
 </script>
 
-<div class="entry-content" id="entry-content-[% entry.entry_id %]">[% entry.content %]</div>
+<div class="entry-content" id="entry-content-[% entry.entry_id %]">[% mark_raw(entry.content) %]</div>
 <p>
   [% FOR tag IN entry.tags %]
   [% tag.name %]
