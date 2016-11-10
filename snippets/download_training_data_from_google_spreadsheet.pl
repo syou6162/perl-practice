@@ -103,6 +103,7 @@ sub download_csv {
 
 my $client_id = $ENV{GOOGLE_OAUTH_CLIENT_ID};
 my $client_secret = $ENV{GOOGLE_OAUTH_CLIENT_SECRET};
+my $session_file = "google_spreadsheet.session";
 
 # store_session_info($client_id, $client_secret, $session_file);
 download_csv($client_id, $client_secret, $session_file);
