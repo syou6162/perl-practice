@@ -67,11 +67,16 @@ sub download_csv {
         my $url = $result->param('url');
         my $label = $result->param('label') || 0;
         my $html = get($url);
+        my $title;
         if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
-            my $title = $1;
+            $title = $1;
             $title =~ s/\n/ /g;
-            say encode_utf8 $url . ", " . $label . ", " . "$title";
+            $result->param( { 'title' => $title } ) unless $result->param('title');
+        } else {
+            $title = "NO_TITLE";
+            $result->param( { 'title' => $title } )
         }
+        say encode_utf8 $url . ", " . $label . ", " . "$title";
     }
 
     # my $max_row = 1000;
