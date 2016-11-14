@@ -66,6 +66,10 @@ sub download_csv {
         my $result = $rows[$idx];
         my $url = $result->param('url');
         my $label = $result->param('label') || 0;
+        if ( $result->param('title') ) {
+            say encode_utf8 $url . ", " . $label . ", " . $result->param('title');
+            next;
+        }
         my $html = get($url);
         my $title;
         if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
