@@ -75,7 +75,10 @@ sub download_csv {
         if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
             $title = $1;
             $title =~ s/\n/ /g;
-            $result->param( { 'title' => $title } ) unless $result->param('title');
+            eval {
+                # "An invalid XML character was found in the element content of the document"でspreadsheetに設定できないときがある
+                $result->param( { 'title' => $title } ) unless $result->param('title');
+            }
         } else {
             $title = "NO_TITLE";
             $result->param( { 'title' => $title } )
