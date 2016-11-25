@@ -31,7 +31,7 @@ sub get_words_from_text {
         my $feature = decode_utf8 $node->feature;
         $node = $node->next;
         next unless $surface;
-        push @$result, $surface;
+        push @$result, $surface if [split(",", $feature)]->[0] eq "名詞";
     }
     return $result;
 }
