@@ -6,6 +6,7 @@ use Encode;
 use Text::MeCab;
 use Algorithm::LibLinear;
 use LWP::Simple;
+use JSON::XS;
 use Clone qw(clone);
 use List::UtilsBy qw( nsort_by rev_nsort_by uniq_by );
 use WebService::Slack::IncomingWebHook;
@@ -48,12 +49,9 @@ sub get_feature_vector {
 
 sub parse_line {
     my $line = shift;
-    my ($url, $label, $title) = split /, /, $line, 3;
-    return {
-        url => $url,
-        label => $label ? 1 : -1,
-        title => $title
-    }
+    my $result = JSON::XS::decode_json $line;
+    $result->{label} = $result->{label} ? 1 : -1;
+    return $result;
 }
 
 sub get_title {
