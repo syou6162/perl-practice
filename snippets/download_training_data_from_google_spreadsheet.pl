@@ -107,7 +107,6 @@ sub download_csv {
                 content => JSON::Types::string $content,
             }
         );
-        say encode_utf8 $url . ", " . $label . ", " . "$title";
     }
 
     # my $max_row = 1000;
