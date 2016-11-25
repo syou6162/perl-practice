@@ -10,6 +10,7 @@ use JSON::XS;
 use Clone qw(clone);
 use List::UtilsBy qw( nsort_by rev_nsort_by uniq_by );
 use WebService::Slack::IncomingWebHook;
+use HTML::ExtractContent;
 use v5.10;
 
 sub get_feature_id {
@@ -54,9 +55,13 @@ sub parse_line {
     return $result;
 }
 
-sub get_title {
+sub get_html {
     my $url = shift;
     my $html = get($url);
+}
+
+sub get_title {
+    my $html = shift;
     my $title = "";
     if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
         $title = $1;
@@ -65,18 +70,36 @@ sub get_title {
     return $title;
 }
 
+sub get_content {
+    my $html = shift;
+    my $extractor = HTML::ExtractContent->new;
+    $extractor->extract($html);
+    return encode_utf8 $extractor->as_text;
+}
+
 sub make_training_example {
     my ($mecab, $feature2id, $line) = @_;
     my $result = parse_line($line);
-    my $feature = get_feature_vector($mecab, $feature2id, $result->{title}, 0);
+    my $feature = {
+        %{get_feature_vector($mecab, $feature2id, "title", $result->{title}, 0)},
+        %{get_feature_vector($mecab, $feature2id, "content", $result->{content}, 0)},
+    };
     $result->{feature} = $feature;
     return $result;
 }
 
 sub make_test_example {
     my ($mecab, $feature2id, $url) = @_;
-    my $title = get_title($url);
-    my $feature = get_feature_vector($mecab, $feature2id, $title, 1);
+    my $html = get_html($url);
+    my $title = get_title($html);
+    my $content = get_content($html);
+    my $feature = {
+        %{get_feature_vector($mecab, $feature2id, "title", $title, 1)},
+        %{get_feature_vector($mecab, $feature2id, "content", $content, 1)},
+    };
+    sleep 1;
+    warn encode_utf8 $title;
+    warn $url;
     my $result = {
         url => $url,
         title => $title,
