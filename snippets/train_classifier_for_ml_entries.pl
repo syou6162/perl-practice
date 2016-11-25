@@ -4,12 +4,15 @@ use warnings;
 use utf8;
 use Encode;
 use Text::MeCab;
+use JSON::Types;
 use Algorithm::LibLinear;
 use LWP::Simple;
 use JSON::XS;
 use Clone qw(clone);
+use List::Util qw(shuffle reduce);
 use List::UtilsBy qw( nsort_by rev_nsort_by uniq_by );
 use WebService::Slack::IncomingWebHook;
+use WebService::Mackerel;
 use HTML::ExtractContent;
 use v5.10;
 
@@ -202,6 +205,48 @@ my $learner = Algorithm::LibLinear->new(
     solver => 'L2R_L2LOSS_SVC_DUAL',  # 分類器の学習に使うソルバ
 );
 my $classifier = $learner->train(data_set => $data_set);
+
+my $metrics = get_averaged_dev_evaluation_metrics($tmp, 30, $cost, $epsilon, $solver);
+
+my $mackerel = WebService::Mackerel->new(
+    api_key => $ENV{ML_STUDY_MACKEREL_API_KEY},
+    service_name => 'ML-Study',
+);
+
+my $res1 = $mackerel->post_service_metrics(
+    [
+        {
+            "name"  => "evaluation.precision",
+            "time"  => time,
+            "value" => JSON::Types::number $metrics->{precision},
+        },
+        {
+            "name"  => "evaluation.recall",
+            "time"  => time,
+            "value" => JSON::Types::number $metrics->{recall},
+        },
+        {
+            "name"  => "evaluation.f_value",
+            "time"  => time,
+            "value" => JSON::Types::number $metrics->{f_value},
+        },
+    ]
+);
+
+my $res2 = $mackerel->post_service_metrics(
+    [
+        {
+            "name"  => "count.positive",
+            "time"  => time,
+            "value" => scalar grep {$_->{label}  == 1} @$tmp,
+        },
+        {
+            "name"  => "count.negative",
+            "time"  => time,
+            "value" => scalar grep {$_->{label}  == -1} @$tmp,
+        },
+    ]
+);
 
 # for my $example (@$org_training_data) {
 #     my $score = $classifier->{raw_model}->predict_values($example->{feature})->[0];
