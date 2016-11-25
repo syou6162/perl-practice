@@ -6,8 +6,11 @@ use Storable;
 use Net::Google::Spreadsheets;
 use Net::Google::DataAPI::Auth::OAuth2;
 use Net::OAuth2::AccessToken;
+use HTML::ExtractContent;
 use Term::Prompt;
 use LWP::Simple;
+use JSON::XS;
+use JSON::Types;
 
 use utf8;
 use Encode;
@@ -46,6 +49,7 @@ sub download_csv {
 
     # deserialise the file so we can thaw the session and reuse the refresh token
     my $session = retrieve($session_file);
+    my $extractor = HTML::ExtractContent->new;
 
     my $restored_token = Net::OAuth2::AccessToken->session_thaw(
         $session,
@@ -66,23 +70,43 @@ sub download_csv {
         my $result = $rows[$idx];
         my $url = $result->param('url');
         my $label = $result->param('label') || 0;
-        if ( $result->param('title') ) {
-            say encode_utf8 $url . ", " . $label . ", " . $result->param('title');
+        if ( $result->param('title') || $result->param('content') ) {
+            say JSON::XS::encode_json(
+                {
+                    url     => JSON::Types::string $url,
+                    label   => JSON::Types::number $label,
+                    title   => JSON::Types::string $result->param('title'),
+                    content => JSON::Types::string $result->param('content'),
+                }
+            );
             next;
         }
         my $html = get($url);
         my $title;
+        my $content;
         if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
             $title = $1;
             $title =~ s/\n/ /g;
             eval {
                 # "An invalid XML character was found in the element content of the document"でspreadsheetに設定できないときがある
                 $result->param( { 'title' => $title } ) unless $result->param('title');
+
+                $extractor->extract($html);
+                $content = encode_utf8 $extractor->as_text;
+                $result->param( { 'content' => $content } ) unless $result->param('content');
             }
         } else {
             $title = "NO_TITLE";
             $result->param( { 'title' => $title } )
         }
+        say JSON::XS::encode_json(
+            {
+                url     => JSON::Types::string $url,
+                label   => JSON::Types::number $label,
+                title   => JSON::Types::string $title,
+                content => JSON::Types::string $content,
+            }
+        );
         say encode_utf8 $url . ", " . $label . ", " . "$title";
     }
 
