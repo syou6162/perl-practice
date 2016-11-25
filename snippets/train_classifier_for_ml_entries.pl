@@ -190,20 +190,29 @@ my $feature2id = {};
 my $mecab = Text::MeCab->new();
 
 my $org_training_data = read_training_data($mecab, $feature2id, "data.txt");
-my $tmp_train = [@{clone($org_training_data)}];
-for my $example (@$tmp_train) {
+my $tmp = [@{clone($org_training_data)}];
+for my $example (@$tmp) {
     delete $example->{title};
+    delete $example->{content};
     delete $example->{url};
 }
+
+$tmp = [shuffle @$tmp];
+
 my $data_set = Algorithm::LibLinear::DataSet->new(
-    data_set => $tmp_train
+    data_set => $tmp
 );
 
+my $cost = 1.0;
+my $epsilon = 0.0001;
+my $solver = 'L2R_L2LOSS_SVC_DUAL';
+
 my $learner = Algorithm::LibLinear->new(
-    cost => 1.0,  # ペナルティコスト
-    epsilon => 0.0001,  # 収束判定
-    solver => 'L2R_L2LOSS_SVC_DUAL',  # 分類器の学習に使うソルバ
+    cost => $cost,  # ペナルティコスト
+    epsilon => $epsilon,  # 収束判定
+    solver => $solver,  # 分類器の学習に使うソルバ
 );
+
 my $classifier = $learner->train(data_set => $data_set);
 
 my $metrics = get_averaged_dev_evaluation_metrics($tmp, 30, $cost, $epsilon, $solver);
