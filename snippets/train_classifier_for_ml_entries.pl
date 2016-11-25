@@ -98,6 +98,68 @@ sub read_training_data {
     $train_data;
 }
 
+sub get_freq {
+    my ( $golds, $predictions ) = @_;
+    my $result = {};
+    my $pair;
+    for my $idx ( 0 .. @$golds - 1 ) {
+        $pair = "$golds->[$idx],$predictions->[$idx]";
+        $result->{$pair} += 1;
+    }
+    $result;
+}
+
+sub get_evaluation_metrics {
+    my ($golds, $predictions) = @_;
+    my $freq = get_freq $golds, $predictions;
+    my $tp = $freq->{"1,1"} || 0.0;
+    my $tn = $freq->{"-1,-1"} || 0.0;
+    my $fp = $freq->{"-1,1"} || 0.0;
+    my $fn = $freq->{"1,-1"} || 0.0;
+    my $recall = $tp / ($tp + $fn);
+    my $precision = $tp / ($tp + $fp);
+    return {
+        recall    => $recall,
+        precision => $precision,
+        f_value   => ( 2.0 * $recall * $precision ) / ( $recall + $precision ),
+    };
+}
+
+sub get_dev_evaluation_metrics {
+    my ($data, $cost, $epsilon, $solver) = @_;
+    my $train = [@$data[0..(scalar @$data * 0.8)]];
+    my $dev = [@$data[(scalar @$data * 0.8) + 1 .. scalar @$data - 1]];
+    my $data_set = Algorithm::LibLinear::DataSet->new(
+        data_set => $train
+    );
+    my $learner = Algorithm::LibLinear->new(
+        cost => $cost,
+        epsilon => $epsilon,
+        solver => $solver,
+    );
+    my $classifier = $learner->train(data_set => $data_set);
+
+    my $predictions = [];
+    for my $example (@$dev) {
+        push @$predictions, $classifier->predict(feature => $example->{feature});
+    }
+    return get_evaluation_metrics([map {$_->{label}} @$dev], $predictions);
+}
+
+sub get_averaged_dev_evaluation_metrics {
+    my ($data, $n, $cost, $epsilon, $solver) = @_;
+    my $result = [];
+    for my $i (0..$n) {
+        $data = [shuffle @$data];
+        push @$result, get_dev_evaluation_metrics($data, $cost, $epsilon, $solver);
+    }
+    return {
+        recall => (reduce { $a + $b->{recall}} 0.0, @$result) / $n,
+        precision  => (reduce { $a + $b->{precision}} 0.0, @$result) / $n,
+        f_value => (reduce { $a + $b->{f_value}} 0.0, @$result) / $n,
+    };
+}
+
 my $feature2id = {};
 my $mecab = Text::MeCab->new();
 
