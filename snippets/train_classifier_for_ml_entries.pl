@@ -38,9 +38,9 @@ sub get_words_from_text {
 }
 
 sub get_feature_vector {
-    my ($mecab, $feature2id, $text, $is_test) = @_;
+    my ($mecab, $feature2id, $prefix, $text, $is_test) = @_;
     my $result = {};
-    my @word_ids = map { get_feature_id( $feature2id, $_, $is_test ) } @{ get_words_from_text( $mecab, $text ) };
+    my @word_ids = map { get_feature_id( $feature2id, $prefix . ":" . $_, $is_test ) } @{ get_words_from_text( $mecab, $text ) };
     foreach my $word (@word_ids) {
         $result->{$word} = 1;
     }
