@@ -9,7 +9,7 @@ use Algorithm::LibLinear;
 use LWP::Simple;
 use JSON::XS;
 use Clone qw(clone);
-use List::Util qw(shuffle reduce);
+use List::Util qw(shuffle reduce min);
 use List::UtilsBy qw( nsort_by rev_nsort_by uniq_by );
 use WebService::Slack::IncomingWebHook;
 use WebService::Mackerel;
@@ -151,10 +151,44 @@ sub get_evaluation_metrics {
     };
 }
 
+sub under_sampling {
+    my ($data) = @_;
+    my $result = [grep {$_->{label} == 1} @$data];
+    my $minor_cnt = scalar @$result;
+    my $cnt = 0;
+    for my $example (shuffle grep {$_->{label} == -1} @$data) {
+        last if $cnt > $minor_cnt;
+        if ($example->{label} == -1) {
+            push @$result, $example;
+            $cnt++;
+        }
+    }
+    return $result;
+}
+
+sub over_sampling {
+    my ($data) = @_;
+    my $result = [grep {$_->{label} == -1} @$data];
+    my $major_cnt = scalar @$result;
+    my $cnt = 0;
+    my $pos_examples = [shuffle grep {$_->{label} == 1} @$data];
+    while(1) {
+        last if $cnt > $major_cnt;
+        use Data::Dumper; warn Dumper int(rand(scalar @$pos_examples - 1));
+        push @$result, @$pos_examples[int(rand(scalar @$pos_examples - 1))];
+        $cnt++;
+    }
+    return $result;
+}
+
 sub get_dev_evaluation_metrics {
     my ($data, $cost, $epsilon, $solver) = @_;
+    $data = [shuffle @$data];
     my $train = [@$data[0..(scalar @$data * 0.8)]];
     my $dev = [@$data[(scalar @$data * 0.8) + 1 .. scalar @$data - 1]];
+    # どっちもうまく精度が上がってくれない...
+    # $train = under_sampling($train);
+    # $train = over_sampling($train);
     my $data_set = Algorithm::LibLinear::DataSet->new(
         data_set => $train
     );
