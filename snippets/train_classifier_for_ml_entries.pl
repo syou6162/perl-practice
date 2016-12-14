@@ -260,13 +260,13 @@ my $res2 = $mackerel->post_service_metrics(
     ]
 );
 
-# for my $example (@$org_training_data) {
-#     my $score = $classifier->{raw_model}->predict_values($example->{feature})->[0];
-#     $example->{score} = $score;
-# }
-# for my $example (uniq_by {$_->{title}} uniq_by {$_->{url}} nsort_by {abs($_->{score})} @$org_training_data) {
-#     say $example->{score} . " " . $example->{title};
-# }
+for my $example (@$org_training_data) {
+    my $score = $classifier->{raw_model}->predict_values($example->{feature})->[0];
+    $example->{score} = $score;
+}
+for my $example (uniq_by {$_->{title}} uniq_by {$_->{url}} nsort_by {abs($_->{score})} @$org_training_data) {
+    say encode_utf8 $example->{score} . " " . $example->{title} if $example->{label} == -1;
+}
 
 my $test_examples = [];
 
