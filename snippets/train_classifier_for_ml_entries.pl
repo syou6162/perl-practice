@@ -206,8 +206,9 @@ my $data_set = Algorithm::LibLinear::DataSet->new(
 );
 
 my $cost = 1.0;
-my $epsilon = 0.0001;
-my $solver = 'L2R_L2LOSS_SVC_DUAL';
+my $epsilon = 0.0000001;
+# my $solver = 'L2R_L2LOSS_SVC_DUAL';
+my $solver = "L2R_LR";
 
 my $learner = Algorithm::LibLinear->new(
     cost => $cost,  # ペナルティコスト
