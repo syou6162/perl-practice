@@ -191,7 +191,9 @@ my $mecab = Text::MeCab->new();
 
 my $org_training_data = read_training_data($mecab, $feature2id, "data.txt");
 my $tmp = [@{clone($org_training_data)}];
+my $titles = {};
 for my $example (@$tmp) {
+    $titles->{$example->{title}} = 1;
     delete $example->{title};
     delete $example->{content};
     delete $example->{url};
@@ -288,7 +290,7 @@ $client->post(
 );
 
 for my $example (uniq_by {$_->{title}} uniq_by {$_->{url}} rev_nsort_by {$_->{score}} @$test_examples) {
-    if ($example->{score} > 0) {
+    if (not exists($titles->{$example->{title}}) && $example->{score} > 0) {
         $client->post(
             username   => 'ML君',
             text       => "<$example->{url}|$example->{title}>",
