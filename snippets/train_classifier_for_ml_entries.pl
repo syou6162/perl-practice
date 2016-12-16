@@ -327,7 +327,7 @@ $client->post(
 );
 
 for my $example (uniq_by {$_->{title}} uniq_by {$_->{url}} rev_nsort_by {$_->{score}} @$test_examples) {
-    if (not exists($titles->{$example->{title}}) && $example->{score} > 0) {
+    if ((not exists($titles->{$example->{title}})) && ($example->{score} > 0)) {
         $client->post(
             username   => 'ML君',
             text       => "<$example->{url}|$example->{title}>",
