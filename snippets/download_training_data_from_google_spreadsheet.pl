@@ -39,7 +39,7 @@ sub store_session_info {
 }
 
 sub download_csv {
-    my ($client_id, $client_secret, $session_file) = @_;
+    my ($client_id, $client_secret, $session_file, $sheet_name) = @_;
 
     my $oauth2 = Net::Google::DataAPI::Auth::OAuth2->new(
         client_id => $client_id,
@@ -63,7 +63,7 @@ sub download_csv {
     );
 
     my $spreadsheet = $service->spreadsheet( { title => 'suggest-entries-for-ml-study' } );
-    my $worksheet = $spreadsheet->worksheet( { title => 'Sheet1' } );
+    my $worksheet = $spreadsheet->worksheet( { title => $sheet_name } );
 
     my @rows = $worksheet->rows({ });
     for (my $idx = 0; $idx < scalar @rows; $idx++) {
@@ -115,4 +115,6 @@ my $client_secret = $ENV{GOOGLE_OAUTH_CLIENT_SECRET};
 my $session_file = "google_spreadsheet.session";
 
 # store_session_info($client_id, $client_secret, $session_file);
-download_csv($client_id, $client_secret, $session_file);
+
+download_csv($client_id, $client_secret, $session_file, 'Sheet1');
+download_csv($client_id, $client_secret, $session_file, 'Sheet2');
