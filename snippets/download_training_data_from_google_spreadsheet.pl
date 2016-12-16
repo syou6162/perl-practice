@@ -108,27 +108,6 @@ sub download_csv {
             }
         );
     }
-
-    # my $max_row = 1000;
-    # my @cells = $worksheet->cells({
-    #     'min-row' => 1,
-    #     'max-row' => $max_row,
-    #     'min-col' => 1,
-    #     'max-col' => 2
-    # });
-
-    # for (my $idx = 0; $idx < $max_row; $idx++) {
-    #     my $n = $idx * 2;
-    #     my $url = $cells[$n] && $cells[$n]->content;
-    #     my $label = ($cells[$n + 1] && $cells[$n + 1]->content) || 0;
-    #     # my $title = ($cells[$n + 2] && $cells[$n + 2]->content) || "";
-    #     my $html = get($url);
-    #     if ($html && $html =~ m{<TITLE>(.*?)</TITLE>}gism) {
-    #         my $tmp = $1;
-    #         $tmp =~ s/\n/ /g;
-    #         say encode_utf8 $url . ", " . $label . ", " . "$tmp";
-    #     }
-    # }
 }
 
 my $client_id = $ENV{GOOGLE_OAUTH_CLIENT_ID};
